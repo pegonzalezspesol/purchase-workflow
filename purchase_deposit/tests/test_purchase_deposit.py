@@ -20,9 +20,7 @@ class TestPurchaseDeposit(TransactionCase):
             {
                 "name": "Purchase Deposit",
                 "code": "11620",
-                "user_type_id": self.env.ref(
-                    "account.data_account_type_current_assets"
-                ).id,
+                "account_type": "asset_current",
             }
         )
         # Create products:

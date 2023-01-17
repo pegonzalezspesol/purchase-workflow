@@ -14,6 +14,17 @@ class PurchaseAdvancePaymentInv(models.TransientModel):
     _name = "purchase.advance.payment.inv"
     _description = "Purchase Advance Payment Invoice"
 
+    @api.model
+    def default_get(self, fields):
+        result = super(PurchaseAdvancePaymentInv, self).default_get(fields)
+
+        active_id = self._context.get("active_id")
+        purchase = self.env["purchase.order"].browse(active_id)
+        if purchase.state != "purchase":
+            raise UserError(_("This action is allowed only in Purchase Order sate"))
+
+        return result
+
     advance_payment_method = fields.Selection(
         [
             ("percentage", "Down payment (percentage)"),
@@ -44,14 +55,6 @@ class PurchaseAdvancePaymentInv(models.TransientModel):
         string="Vendor Taxes",
         help="Taxes used for deposits",
     )
-
-    @api.model
-    def view_init(self, fields):
-        active_id = self._context.get("active_id")
-        purchase = self.env["purchase.order"].browse(active_id)
-        if purchase.state != "purchase":
-            raise UserError(_("This action is allowed only in Purchase Order sate"))
-        return super().view_init(fields)
 
     @api.onchange("purchase_deposit_product_id")
     def _onchagne_purchase_deposit_product_id(self):
@@ -120,7 +123,6 @@ class PurchaseAdvancePaymentInv(models.TransientModel):
                         "product_id": product.id,
                         "purchase_line_id": po_line.id,
                         "tax_ids": [(6, 0, tax_ids)],
-                        "analytic_account_id": po_line.account_analytic_id.id or False,
                     },
                 )
             ],
