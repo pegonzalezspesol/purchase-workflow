@@ -19,11 +19,13 @@ class TestPurchaseException(TransactionCase):
         cls.product_id_1 = cls.env.ref("product.product_product_6")
         cls.product_id_2 = cls.env.ref("product.product_product_7")
         cls.product_id_3 = cls.env.ref("product.product_product_7")
+        cls.company_id = cls.env.ref("base.main_company")
         cls.date_planned = datetime.today().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
         cls.purchase_exception_confirm = cls.env["purchase.exception.confirm"]
         cls.exception_noemail = cls.env.ref("purchase_exception.po_excep_no_email")
         cls.exception_qtycheck = cls.env.ref("purchase_exception.pol_excep_qty_check")
         cls.po_vals = {
+            "company_id": cls.company_id.id,
             "partner_id": cls.partner_id.id,
             "order_line": [
                 (
@@ -36,6 +38,7 @@ class TestPurchaseException(TransactionCase):
                         "product_uom": cls.product_id_1.uom_po_id.id,
                         "price_unit": 500.0,
                         "date_planned": cls.date_planned,
+                        "company_id": cls.company_id.id,
                     },
                 ),
                 (
@@ -48,6 +51,7 @@ class TestPurchaseException(TransactionCase):
                         "product_uom": cls.product_id_2.uom_po_id.id,
                         "price_unit": 250.0,
                         "date_planned": cls.date_planned,
+                        "company_id": cls.company_id.id,
                     },
                 ),
             ],
@@ -95,6 +99,7 @@ class TestPurchaseException(TransactionCase):
                             "product_uom": self.product_id_3.uom_id.id,
                             "price_unit": 30,
                             "date_planned": self.date_planned,
+                            "company_id": self.company_id.id,
                         },
                     )
                 ]
